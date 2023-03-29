@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const fuction = require('../controllers/crud.controllers')
+const fuction = require('../controllers/crud.controller')
 
 
 router.post('/addAppointment' , fuction.addInAppointmentTable)
