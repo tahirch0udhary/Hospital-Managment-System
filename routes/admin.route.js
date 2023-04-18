@@ -3,7 +3,7 @@ const router = express.Router()
 const {isAdmin} = require('../midlleWare/authJwt.Md')
 const fuction = require('../controllers/crud.controllers')
 
-router.get('/signIn' , fuction.signInAdmin);
+router.get('/signInAdmin' , fuction.signInAdmin);
 router.post('/addAdmin' , fuction.addAdmin)
 router.post('/signUpUser' , fuction.signUpUser)
 

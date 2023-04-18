@@ -31,6 +31,8 @@ const isAdmin = (req, res, next) => {
   
 };
 
+
+
 const isUser = (req, res, next) => {   
   let token = req.headers["authtoken"];
   if (!token) {
@@ -60,5 +62,36 @@ const isUser = (req, res, next) => {
   });
 };
 
+const isDoctor = (req, res, next) => {   
+  let token = req.headers["authtoken"];
+  if (!token) {
+    return res.status(403).send({
+      message: "No token provided!"
+    });
+  }
+  jwt.verify(token, "dfghjk" , (err, decoded) => {
+    if (err) {
+      return res.status(401).send({
+        message: "Unauthorized!"
+      });
+    }
+    else{
+      if(decoded["Role"] == "doctor")
+      {
+          console.log("Verified!");
+          next();
+      }
+      else{
+        return res.status(403).send({
+            message: "Require doctor Role!"
+          });
+      }
+    }
+    
+  });
+};
 
-module.exports = {isAdmin , isUser};
+
+
+
+module.exports = {isAdmin , isUser, isDoctor};

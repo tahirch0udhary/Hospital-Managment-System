@@ -6,152 +6,140 @@ const Insurance = require("../models/insurance.models");
 const Cookies = require("cookies");
 const jwtToken = require("jsonwebtoken");
 const sequelize = require("../config");
-const {Op} = require('sequelize');
+const { Op } = require('sequelize');
+const error = require("../utils/error.handler");
 
 
 ////---------------------ADD----------------
-const signUpUser = (req, res) => {
-  console.log("body", req.body.id);
-  sequelize
-    .sync()
-    .then(() => {
-      console.log("Users table created successfully!");
+// with error handling
 
-      User.create({
-        UserID: req.body.id,
-        Name: req.body.name,
-        Email: req.body.email,
-        Password: req.body.pass,
-      })
-        .then((rs) => {
-          console.log(rs);
-          res.send(rs);
-        })
-        .catch((error) => {
-          console.error("Failed to create a new record : ", error);
-        });
-    })
-    .catch((error) => {
-      console.error("Unable to create table : ", error);
+const signUpUser = async (req, res) => {
+  try {
+    await sequelize.sync();
+    console.log("Users table created successfully!");
+
+    const user = await User.create({
+      UserID: req.body.id,
+      Name: req.body.name,
+      Email: req.body.email,
+      Password: req.body.pass,
     });
-};
-
-const addInDrugTable = (req, res) => {
-  sequelize
-    .sync()
-    .then(() => {
-      console.log("BIKES table created successfully!");
-
-      drug.create({
-        drugName: req.body.name,
-        companyName: req.body.companyName,
-        color: req.body.color,
-        price: req.body.price
-      })
-        .then((rs) => {
-          console.log(rs);
-          res.send(rs);
-        })
-        .catch((error) => {
-          console.error("Failed to create a new record : ", error);
-        });
-    })
-    .catch((error) => {
-      console.error("Unable to create table : ", error);
-    });
-};
-
-const addAdmin = (req, res) => {
-  sequelize
-    .sync()
-    .then(() => {
-      console.log("Admin table created successfully!");
-
-      Admin.create({
-        AdminID: req.body.id,
-        Name: req.body.name,
-        Email: req.body.email,
-        Password: req.body.pass,
-      })
-        .then((rs) => {
-          console.log(rs);
-          res.send(rs);
-        })
-        .catch((error) => {
-          console.error("Failed to create a new record : ", error);
-        });
-    })
-    .catch((error) => {
-      console.error("Unable to create table : ", error);
-    });
+    console.log(user);
+    res.send(user);
+  } catch (error) {
+    console.error("Failed to create a new record : ", error);
+    res.status(500).send(error.message);
+  }
 };
 
 
-const addInappointmentTable = (req, res) => {
-  sequelize
-    .sync()
-    .then(() => {
-      console.log("Users table created successfully!");
+const addInDrugTable = async function (req, res) {
+  try {
+    await sequelize.sync();
+    console.log("Users table created successfully!");
 
-      Appoinment
-        .create({
-          name: req.body.name,
+    const Drug = await drug.create({
+      drugName: req.body.name,
+      companyName: req.body.companyName,
+      color: req.body.color,
+      price: req.body.price
+    });
+    console.log(Drug);
+    res.send(Drug);
+  } catch (error) {
+    console.error("Failed to create a new record : ", error);
+    res.status(500).send(error.message);
+  }
+};
+
+
+
+const addAdmin = async function(req, res) {
+  try {
+    await sequelize.sync();
+    console.log("Users table created successfully!");
+
+    const admin = await Admin.create({
+      AdminID: req.body.id,
+      Name: req.body.name,
+      Email: req.body.email,
+      Password: req.body.pass,
+    });
+    console.log(admin);
+    res.send(admin);
+  } catch (error) {
+    console.error("Failed to create a new record : ", error);
+    res.status(500).send(error.message);
+  }
+};
+
+
+
+const addInappointmentTable = async function(req, res) {
+  try {
+    await sequelize.sync();
+    console.log("Users table created successfully!");
+
+    const appointment = await Appoinment.create({
+      name: req.body.name,
           age: req.body.age,
           gender: req.body.gender,
           fee: req.body.fee,
-        })
-        .then((rs) => {
-          console.log(rs);
-          res.send(rs);
-        })
-        .catch((error) => {
-          console.error("Failed to create a new record : ", error);
-          res.send("error");
-        });
-    })
-    .catch((error) => {
-      console.error("Unable to create table : ", error);
-      res.send("table error");
     });
+    console.log(appointment);
+    res.send(appointment);
+  } catch (error) {
+    console.error("Failed to create a new record : ", error);
+    res.status(500).send(error.message);
+  }
 };
 
-const addInsuranceTable = (req, res) => {
-  sequelize
-    .sync()
-    .then(() => {
-      console.log("Insurance table created successfully!");
+// const addInsuranceTable = (req, res) => {
+//   sequelize
+//     .sync()
+//     .then(() => {
+//       console.log("Insurance table created successfully!");
 
-      Insurance.create({
-        companyName: req.body.companyName,
-        duration: req.body.duration, // in months
-        amount: req.body.amount,
-      })
-        .then((rs) => {
-          console.log(rs);
-          res.send(rs);
-        })
-        .catch((error) => {
-          console.error("Failed to create a new record : ", error);
-        });
-    })
-    .catch((error) => {
-      console.error("Unable to create table : ", error);
-    });
-};
+//       Insurance.create({
+//         companyName: req.body.companyName,
+//         duration: req.body.duration, // in months
+//         amount: req.body.amount,
+//       })
+//         .then((rs) => {
+//           console.log(rs);
+//           res.send(rs);
+//         })
+//         .catch((error) => {
+//           console.error("Failed to create a new record : ", error);
+//         });
+//     })
+//     .catch((error) => {
+//       console.error("Unable to create table : ", error);
+//     });
+// };
 
 //////--------------------------delete--------------------
+
+
 const deleteFomUser = (req, res) => {
   sequelize
     .sync()
     .then(() => {
       User.destroy({
         where: {
-          id: req.body.id,
+          id: req.body.iid,
         },
       })
-        .then(() => {
+        .then((data) => {
+          if (!data) {
+            console.log("data not found");
+            res.send(new error(" no id " , 400))
+          }
+          else
+          {
           console.log("Successfully deleted record.");
           res.send("deleted");
+          }
         })
         .catch((error) => {
           console.error("Failed to delete record : ", error);
@@ -168,15 +156,21 @@ const deleteFromappointment = (req, res) => {
   sequelize
     .sync()
     .then(() => {
-      Appoinment
-        .destroy({
-          where: {
-            name: req.body.name,
-          },
-        })
-        .then(() => {
+      Appoinment.destroy({
+        where: {
+          name: req.body.name,
+        },
+      })
+        .then((data) => {
+          if (!data) {
+            console.log("data not found");
+            res.send(new error(" no name " , 400))
+          }
+          else
+          {
           console.log("Successfully deleted record.");
-          res.send("spare parts data deleted");
+          res.send("deleted");
+          }
         })
         .catch((error) => {
           console.error("Failed to delete record : ", error);
@@ -188,6 +182,7 @@ const deleteFromappointment = (req, res) => {
       res.send("table error");
     });
 };
+
 
 const deleteFomAdmin = (req, res) => {
   sequelize
@@ -211,25 +206,36 @@ const deleteFomAdmin = (req, res) => {
     });
 };
 
+
+
 const deleteFomDrug = (req, res) => {
   sequelize
     .sync()
     .then(() => {
-      drug.destroy({
+      Appoinment.destroy({
         where: {
           id: req.body.id,
         },
       })
-        .then(() => {
+        .then((data) => {
+          if (!data) {
+            console.log("data not found");
+            res.send(new error(" no id " , 400))
+          }
+          else
+          {
           console.log("Successfully deleted record.");
-          res.send(" drugs data deleted");
+          res.send("deleted");
+          }
         })
         .catch((error) => {
           console.error("Failed to delete record : ", error);
+          res.send("error");
         });
     })
     .catch((error) => {
       console.error("Unable to create table : ", error);
+      res.send("table error");
     });
 };
 
@@ -401,8 +407,8 @@ const signInUser = (req, res) => {
       })
         .then((rs) => {
           console.log(rs);
-          const token = jwtToken.sign({username : req.body.name , Role : "user"}, 'dfghjk')
-          res.status(200).send({ 
+          const token = jwtToken.sign({ username: req.body.name, Role: "user" }, 'dfghjk')
+          res.status(200).send({
             username: token.username,
             roles: token.Role,
             accessToken: token
@@ -432,8 +438,8 @@ const signInAdmin = (req, res) => {
         .then((rs) => {
           console.log(rs);
 
-          const token = jwtToken.sign({username : req.body.name , Role : "admin"}, 'rtyui')
-          res.status(200).send({ 
+          const token = jwtToken.sign({ username: req.body.name, Role: "admin" }, 'rtyui')
+          res.status(200).send({
             username: token.username,
             roles: token.Role,
             accessToken: token
@@ -523,50 +529,50 @@ const retriveappointment = (req, res) => {
 const retriveteallfromDrug = (req, res) => {
   const { page } = req.query;
   const { limit, offset } = getPagination(page);
- sequelize
-   .sync()
-   .then(() => {
-     drug.findAll( { limit , offset})
-       .then((data) => {      
-         res.send(data);
-       })
-       .catch((error) => {
-         console.error("Failed to retrieve data : ", error);
-       });
-   })
-   .catch((error) => {
-     console.error("Unable to create table : ", error);
-   });
+  sequelize
+    .sync()
+    .then(() => {
+      drug.findAll({ limit, offset })
+        .then((data) => {
+          res.send(data);
+        })
+        .catch((error) => {
+          console.error("Failed to retrieve data : ", error);
+        });
+    })
+    .catch((error) => {
+      console.error("Unable to create table : ", error);
+    });
 };
 
 const retriveallfromappointment = (req, res) => {
   const { page } = req.query;
   const { limit, offset } = getPagination(page);
- sequelize
-   .sync()
-   .then(() => {
-     Appoinment.findAll( { limit , offset})
-       .then((data) => {      
-         res.send(data);
-       })
-       .catch((error) => {
-         console.error("Failed to retrieve data : ", error);
-       });
-   })
-   .catch((error) => {
-     console.error("Unable to create table : ", error);
-   });
+  sequelize
+    .sync()
+    .then(() => {
+      Appoinment.findAll({ limit, offset })
+        .then((data) => {
+          res.send(data);
+        })
+        .catch((error) => {
+          console.error("Failed to retrieve data : ", error);
+        });
+    })
+    .catch((error) => {
+      console.error("Unable to create table : ", error);
+    });
 };
 
 
 const retriveteallfromuser = (req, res) => {
-   const { page } = req.query;
-   const { limit, offset } = getPagination(page);
+  const { page } = req.query;
+  const { limit, offset } = getPagination(page);
   sequelize
     .sync()
     .then(() => {
-      User.findAll( { limit , offset})
-        .then((data) => {      
+      User.findAll({ limit, offset })
+        .then((data) => {
           res.send(data);
         })
         .catch((error) => {
@@ -581,20 +587,20 @@ const retriveteallfromuser = (req, res) => {
 const retriveteallfrominsurance = (req, res) => {
   const { page } = req.query;
   const { limit, offset } = getPagination(page);
- sequelize
-   .sync()
-   .then(() => {
-     Insurance.findAll( { limit , offset})
-       .then((data) => {      
-         res.send(data);
-       })
-       .catch((error) => {
-         console.error("Failed to retrieve data : ", error);
-       });
-   })
-   .catch((error) => {
-     console.error("Unable to create table : ", error);
-   });
+  sequelize
+    .sync()
+    .then(() => {
+      Insurance.findAll({ limit, offset })
+        .then((data) => {
+          res.send(data);
+        })
+        .catch((error) => {
+          console.error("Failed to retrieve data : ", error);
+        });
+    })
+    .catch((error) => {
+      console.error("Unable to create table : ", error);
+    });
 };
 
 
@@ -613,7 +619,7 @@ const filterUsers = (req, res) => {
   sequelize
     .sync()
     .then(() => {
-        User.findAll({
+      User.findAll({
         where: {
           id: {
             [Op.between]: [req.body.fromID, req.body.toID]
@@ -637,8 +643,8 @@ const filterUsers = (req, res) => {
 const filterDrug = (req, res) => {
   sequelize
     .sync()
-    .then(() => {  
-        drug.findAll({    
+    .then(() => {
+      drug.findAll({
         where: {
           price: {
             [Op.between]: [req.body.fromPrice, req.body.toPrice]
@@ -663,7 +669,7 @@ const filterappointment = (req, res) => {
   sequelize
     .sync()
     .then(() => {
-        Appoinment.findAll({
+      Appoinment.findAll({
         where: {
           age: {
             [Op.between]: [req.body.fromAge, req.body.toAge]
@@ -688,7 +694,7 @@ const filterInsurance = (req, res) => {
   sequelize
     .sync()
     .then(() => {
-        Insurance.findAll({
+      Insurance.findAll({
         where: {
           amount: {
             [Op.between]: [req.body.fromPrice, req.body.toPrice]
@@ -743,7 +749,6 @@ module.exports = {
   retrieveDrug,
   deleteFomDrug,
   updateDrug,
-  addInsuranceTable,
   retriveteInsurance,
   deleteFomInsurance,
   upadteInsurance,

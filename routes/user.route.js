@@ -4,7 +4,7 @@ const {isUser} = require('../midlleWare/authJwt.Md')
 const fuction = require('../controllers/crud.controllers')
 
 router.post('/signUpUser' , fuction.signUpUser);
-router.get('/signIn' , fuction.signInUser);
+router.get('/signInUser' , fuction.signInUser);
 
 router.post('/adddrug' , isUser ,  fuction.addInDrugTable)
 router.post('/addappointment' ,isUser, fuction.addInappointmentTable)
